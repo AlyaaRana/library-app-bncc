@@ -13,6 +13,7 @@ class MemberController extends Controller
     public function index()
     {
         //
+        return response()->json(Member::all());
     }
 
     /**
@@ -29,6 +30,18 @@ class MemberController extends Controller
     public function store(Request $request)
     {
         //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'nullable|email',
+            'phone' => 'nullable|string|max:20',
+        ]);
+
+        $member = Member::create($request->all());
+
+        return response()->json([
+            'message' => 'Member created',
+            'data' => $member
+        ], 201);
     }
 
     /**
@@ -37,6 +50,7 @@ class MemberController extends Controller
     public function show(Member $member)
     {
         //
+        return response()->json($member);
     }
 
     /**
@@ -53,6 +67,12 @@ class MemberController extends Controller
     public function update(Request $request, Member $member)
     {
         //
+        $member->update($request->all());
+
+        return response()->json([
+            'message' => 'Member updated',
+            'data' => $member
+        ]);
     }
 
     /**
@@ -61,5 +81,10 @@ class MemberController extends Controller
     public function destroy(Member $member)
     {
         //
+        $member->delete();
+
+        return response()->json([
+            'message' => 'Member deleted'
+        ]);
     }
 }
