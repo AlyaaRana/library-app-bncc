@@ -13,13 +13,21 @@ class Book extends Model
         'category_id',
         'title',
         'author',
+        'isbn',
         'publisher',
-        'year',
+        'publication_year',
         'stock',
+        'cover_image',
+        'description'
     ];
 
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function borrowingDetails()
+    {
+        return $this->hasMany(BorrowingDetail::class);
     }
 }
