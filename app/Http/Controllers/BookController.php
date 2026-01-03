@@ -62,7 +62,7 @@ class BookController extends Controller
         }
 
         Book::create($data);
-        return redirect()->route('books.index');
+        return redirect()->route('books.index')->with('success', 'Buku berhasil ditambahkan.');
     }
 
     /**
@@ -70,7 +70,7 @@ class BookController extends Controller
      */
     public function show(Book $book)
     {
-        //
+        return view('books.show', compact('book'));
     }
 
     /**
