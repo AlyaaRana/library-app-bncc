@@ -1,6 +1,3 @@
-Here's the English version of the README:
-
-```markdown
 # 📚 Library Management System
 
 <p align="center">
@@ -74,8 +71,6 @@ Library Management System is a web-based application built using **Laravel 11**.
 - **Members → Borrowings**: One-to-Many
 - **Borrowings → Borrowing_Details**: One-to-Many
 - **Books → Borrowing_Details**: One-to-Many
-
----
 
 ## 🚀 Installation
 
