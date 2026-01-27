@@ -21,7 +21,7 @@ class MemberController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'member_code' => 'required|unique:members,member_code',
+            'member_code' => 'nullable|unique:members,member_code',
             'name' => 'required|string|max:255',
             'email' => 'nullable|email|unique:members,email',
             'phone' => 'nullable|string|max:20',
@@ -29,7 +29,16 @@ class MemberController extends Controller
             'join_date' => 'required|date'
         ]);
 
-        Member::create($request->all());
+        $data = $request->all();
+
+        // Generate member_code if not provided
+        if (empty($data['member_code'])) {
+            $lastMember = Member::orderBy('id', 'desc')->first();
+            $nextId = $lastMember ? $lastMember->id + 1 : 1;
+            $data['member_code'] = 'MEM-' . str_pad($nextId, 3, '0', STR_PAD_LEFT);
+        }
+
+        Member::create($data);
         return redirect()->route('members.index')->with('success', 'Anggota berhasil ditambahkan.');
     }
 

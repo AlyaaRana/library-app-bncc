@@ -1,14 +1,15 @@
+{{--
+Fungsi: Halaman utama dengan statistik perpustakaan.
+Struktur: Extends layout app, section content dengan cards dan charts.
+Fitur: Cards total buku/anggota/peminjaman, list popular books, chart peminjaman per bulan.
+--}}
 @extends('layouts.app')
 
+@section('title', 'Dashboard')
 
-
-
-
-
-
-
-
-
+@section('content')
+{{-- Isi konten di sini --}}
+@endsection
 
 
 

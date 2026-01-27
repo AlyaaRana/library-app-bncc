@@ -11,22 +11,26 @@ Route::get('/', function () {
     return redirect()->route('dashboard');
 });
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-/*
-|--------------------------------------------------------------------------
-| Library System Routes
-|--------------------------------------------------------------------------
-*/
+    /*
+    |--------------------------------------------------------------------------
+    | Library System Routes
+    |--------------------------------------------------------------------------
+    */
 
-// Books
-Route::resource('books', BookController::class);
+    // Books
+    Route::resource('books', BookController::class);
 
-// Categories
-Route::resource('categories', CategoryController::class);
+    // Categories
+    Route::resource('categories', CategoryController::class);
 
-// Members
-Route::resource('members', MemberController::class);
+    // Members
+    Route::resource('members', MemberController::class);
 
-// Borrowings
-Route::resource('borrowings', BorrowingController::class);
+    // Borrowings
+    Route::resource('borrowings', BorrowingController::class);
+});
+
+require __DIR__.'/auth.php';
