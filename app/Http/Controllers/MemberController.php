@@ -7,84 +7,66 @@ use Illuminate\Http\Request;
 
 class MemberController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
-        return response()->json(Member::all());
+        $members = Member::latest()->paginate(10);
+        return view('members.index', compact('members'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        return view('members.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
         $request->validate([
+            'member_code' => 'required|unique:members,member_code',
             'name' => 'required|string|max:255',
-            'email' => 'nullable|email',
+            'email' => 'nullable|email|unique:members,email',
             'phone' => 'nullable|string|max:20',
+            'address' => 'nullable|string',
+            'join_date' => 'required|date'
         ]);
 
-        $member = Member::create($request->all());
-
-        return response()->json([
-            'message' => 'Member created',
-            'data' => $member
-        ], 201);
+        Member::create($request->all());
+        return redirect()->route('members.index')->with('success', 'Anggota berhasil ditambahkan.');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Member $member)
     {
-        //
-        return response()->json($member);
+        return view('members.show', compact('member'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Member $member)
     {
-        //
+        return view('members.edit', compact('member'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Member $member)
     {
-        //
-        $member->update($request->all());
-
-        return response()->json([
-            'message' => 'Member updated',
-            'data' => $member
+        $request->validate([
+            'member_code' => 'required|unique:members,member_code,' . $member->id,
+            'name' => 'required|string|max:255',
+            'email' => 'nullable|email|unique:members,email,' . $member->id,
+            'phone' => 'nullable|string|max:20',
+            'address' => 'nullable|string',
+            'join_date' => 'required|date'
         ]);
+
+        $member->update($request->all());
+        return redirect()->route('members.index')->with('success', 'Anggota berhasil diperbarui.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Member $member)
     {
-        //
-        $member->delete();
+        $activeBorrowings = $member->borrowings()->where('status', 'borrowed')->count();
 
-        return response()->json([
-            'message' => 'Member deleted'
-        ]);
+        if ($activeBorrowings > 0) {
+            return redirect()->back()->with('error', 'Anggota tidak bisa dihapus karena masih memiliki peminjaman aktif.');
+        }
+
+        $member->delete();
+        return redirect()->route('members.index')->with('success', 'Anggota berhasil dihapus.');
     }
 }

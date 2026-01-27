@@ -11,59 +11,46 @@ use Illuminate\Support\Facades\DB;
 
 class BorrowingController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
-        $borrowings = Borrowing::with('member')->latest()->get();
-        return response()->json($borrowings);
+        $borrowings = Borrowing::with('member')->latest()->paginate(10);
+        return view('borrowings.index', compact('borrowings'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
         $members = Member::all();
-        $books = Book::all();
-
-        return response()->json([
-            'members' => $members,
-            'books' => $books
-        ]);
+        $books = Book::where('stock', '>', 0)->get();
+        return view('borrowings.create', compact('members', 'books'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'member_id' => 'required|exists:members,id',
+            'books' => 'required|array|min:1',
+            'books.*.book_id' => 'required|exists:books,id',
+            'books.*.quantity' => 'required|integer|min:1'
+        ]);
+
         DB::beginTransaction();
 
         try {
-            // buat borrowing
             $borrowing = Borrowing::create([
                 'member_id' => $request->member_id,
-                'borrow_date' => now(),
+                'borrow_date' => now()->toDateString(),
                 'status' => 'borrowed'
             ]);
 
             foreach ($request->books as $item) {
                 $book = Book::findOrFail($item['book_id']);
 
-                // cek stock
                 if ($book->stock < $item['quantity']) {
                     throw new \Exception("Stock buku {$book->title} tidak cukup");
                 }
 
-                // kurangi stock
                 $book->decrement('stock', $item['quantity']);
 
-                // simpan detail
                 BorrowingDetail::create([
                     'borrowing_id' => $borrowing->id,
                     'book_id' => $book->id,
@@ -72,63 +59,59 @@ class BorrowingController extends Controller
             }
 
             DB::commit();
-            return response()->json(['message' => 'Borrowing success']);
+            return redirect()->route('borrowings.index')->with('success', 'Peminjaman berhasil dibuat.');
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['error' => $e->getMessage()], 400);
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Borrowing $borrowing)
     {
-        //
         $borrowing->load('member', 'details.book');
-        return response()->json($borrowing);
+        return view('borrowings.show', compact('borrowing'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Borrowing $borrowing)
     {
-        //
-        $borrowing->load('member', 'details.book');
-        return response()->json($borrowing);
+        if ($borrowing->status === 'returned') {
+            return redirect()->back()->with('error', 'Peminjaman sudah dikembalikan.');
+        }
+        $borrowing->load('details.book');
+        return view('borrowings.edit', compact('borrowing'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Borrowing $borrowing)
     {
-        //
         if ($borrowing->status === 'returned') {
-            return response()->json(['message' => 'Already returned']);
+            return redirect()->back()->with('error', 'Peminjaman sudah dikembalikan.');
         }
 
-        foreach ($borrowing->details as $detail) {
-            $detail->book->increment('stock', $detail->quantity);
+        DB::beginTransaction();
+
+        try {
+            foreach ($borrowing->details as $detail) {
+                $detail->book->increment('stock', $detail->quantity);
+            }
+
+            $borrowing->update([
+                'status' => 'returned',
+                'return_date' => now()->toDateString()
+            ]);
+
+            DB::commit();
+            return redirect()->route('borrowings.index')->with('success', 'Buku berhasil dikembalikan.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
         }
-
-        $borrowing->update([
-            'status' => 'returned',
-            'return_date' => now()
-        ]);
-
-        return response()->json(['message' => 'Book returned']);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Borrowing $borrowing)
     {
-        //
         $borrowing->delete();
-        return response()->json(['message' => 'Deleted']);
+        return redirect()->route('borrowings.index')->with('success', 'Peminjaman berhasil dihapus.');
     }
 }
