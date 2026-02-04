@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Borrowing;
 use App\Models\BorrowingDetail;
 use App\Models\Book;
+use App\Models\User;
 use App\Models\Member;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -19,9 +20,10 @@ class BorrowingController extends Controller
 
     public function create()
     {
-        $members = Member::all();
+        $users = User::all();
         $books = Book::where('stock', '>', 0)->get();
-        return view('borrowings.create', compact('members', 'books'));
+
+        return view('borrowings.create', compact('users', 'books'));
     }
 
     public function store(Request $request)
