@@ -269,8 +269,8 @@ php artisan migrate:fresh --seed
 
 ## 👨‍💻 Author
 
-**Alyaa Rana & Joshua Genio**
-- GitHub: [@AlyaaRana](https://github.com/AlyaaRana) | [@ExO96](https://github.com/ExO96)
+**Alyaa Rana Raya & Joshua Genio Wiratama & Nathan Gabriel Pramellah**
+- GitHub: [@AlyaaRana](https://github.com/AlyaaRana) | [@ExO96](https://github.com/ExO96) | [@UgandanNut] (https://github.com/UgandanNut)
 - Repository: [library-app-bncc](https://github.com/AlyaaRana/library-app-bncc)
 
 ---
