@@ -5,12 +5,17 @@
 @section('content')
 <div class="container py-4">
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
+   <div class="container py-4">
+
+    <div class="d-flex justify-content-end align-items-center gap-3 mb-3 shadow-sm">
         <h4 class="fw-bold mb-0">👥 Members</h4>
+
         <a href="{{ route('members.create') }}" class="btn btn-primary">
             + Add Member
         </a>
     </div>
+
+</div>
 
     @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show">
@@ -42,7 +47,8 @@
                     @forelse($members as $member)
                     <tr>
                         <td>
-                            <span class="badge bg-secondary">
+                            <span class="badge bg-secondary btn btn-dark btn-lg fw-bold px-5 py-3
+                   text-uppercase shadow-sm">
                                 {{ $member->member_code }}
                             </span>
                         </td>
@@ -51,14 +57,22 @@
                         <td>
                             {{ $member->join_date ? \Carbon\Carbon::parse($member->join_date)->format('d M Y') : '-' }}
                         </td>
-                        <td class="text-center">
-                            <a href="{{ route('members.show', $member) }}" class="btn btn-sm btn-info">Detail</a>
-                            <a href="{{ route('members.edit', $member) }}" class="btn btn-sm btn-warning">Edit</a>
+                        <td class="text-center group inline-flex items-center justify-between gap-6
+         px-6 py-3 min-w-[260px]
+         bg-gray-100 text-gray-900
+         text-sm font-semibold uppercase tracking-wide
+         rounded-full
+         shadow-lg shadow-black/20
+         transition-all duration-300 ease-out
+         hover:-translate-y-0.5 hover:shadow-xl hover:shadow-black/30
+         active:translate-y-0">
+                            <a href="{{ route('members.show', $member) }}" class="btn btn-sm btn-info shadow-sm ">Detail</a>
+                            <a href="{{ route('members.edit', $member) }}" class="btn btn-sm btn-warning shadow-sm">Edit</a>
 
                             <form action="{{ route('members.destroy', $member) }}" method="POST" class="d-inline">
                                 @csrf
                                 @method('DELETE')
-                                <button class="btn btn-sm btn-danger"
+                                <button class="btn btn-sm btn-danger shadow-sm"
                                     onclick="return confirm('Delete this member?')">
                                     Delete
                                 </button>
