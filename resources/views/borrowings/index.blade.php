@@ -2,14 +2,15 @@
 
 @section('content')
 <div class="container py-4">
+<div class="container py-4">
 
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4 class="fw-bold mb-0">📖 Borrowings</h4>
-        <a href="{{ route('borrowings.create') }}" class="btn btn-success">
+        
+        <a href="{{ route('borrowings.create') }}" class="btn btn-primary card shadow-sm">
             + Borrow
         </a>
     </div>
-
+</div>
     <div class="card shadow-sm">
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0">

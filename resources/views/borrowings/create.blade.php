@@ -37,24 +37,24 @@
                     </select>
                 </div>
 
-                {{-- BOOKS --}}
-                <div class="mb-4">
-                    <label class="form-label fw-semibold">
-                        Books
-                    </label>
-                    <select name="book_ids[]"
-                            class="form-select"
-                            multiple
-                            size="6"
-                            required>
-                        @foreach($books as $bk)
-                            <option value="{{ $bk->id }}">
-                                {{ $bk->title }}
-                            </option>
-                        @endforeach
-                    </select>
-                  
-                </div>
+              {{-- BOOKS --}}
+<div class="mb-4">
+    <label class="form-label fw-semibold">Books</label>
+
+    <div class="select2-wrapper">
+        <select name="book_ids[]"
+                class="form-select select2"
+                multiple
+                required>
+            @foreach($books as $bk)
+                <option value="{{ $bk->id }}">
+                    {{ $bk->title }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+</div>
+
 
                 {{-- ACTIONS --}}
                 <div class="d-flex justify-content-between align-items-center mt-5">
@@ -74,4 +74,6 @@
     </div>
 
 </div>
+
+
 @endsection

@@ -7,10 +7,10 @@
 
    <div class="container py-4">
 
-    <div class="d-flex justify-content-end align-items-center gap-3 mb-3 shadow-sm">
-        <h4 class="fw-bold mb-0">👥 Members</h4>
+    <div class="d-flex justify-content-end align-items-center gap-3 mb-3 ">
+        
 
-        <a href="{{ route('members.create') }}" class="btn btn-primary">
+        <a href="{{ route('members.create') }}" class="btn btn-primary card shadow-sm">
             + Add Member
         </a>
     </div>

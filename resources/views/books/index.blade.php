@@ -2,13 +2,14 @@
 
 @section('content')
 <div class="container py-4">
+    <div class="container py-4">
 
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4 class="fw-bold mb-0">📚 Books</h4>
-        <a href="{{ route('books.create') }}" class="btn btn-success">
+        <a href="{{ route('books.create') }}" class="btn btn-primary card shadow-sm">
             + Add Book
         </a>
     </div>
+</div>
 
     <div class="card shadow-sm mb-3">
         <div class="card-body">
